@@ -93,4 +93,43 @@ Bagian ini menjelaskan isi proyek, struktur folder, cara menjalankan program, da
 
 Dari tugas ini, kami belajar membuat model data, mengatur data tugas, menjalankan simulasi, dan menulis dokumentasi proyek. README ini dibuat supaya isi proyek lebih mudah dipahami.
 
+# Tugas Proyek Minggu 3 PAM
+## Aplikasi Pengingat Tugas Kuliah — TemanTugas
+
+### Dokumentasi dan Testing UI
+
+Pada minggu ke-3, proyek TemanTugas dilanjutkan dengan pengembangan tampilan aplikasi menggunakan Compose Multiplatform.
+
+Bagian ini berfokus pada dokumentasi hasil pengerjaan UI dan pengujian tampilan aplikasi.
+
+### Hasil Pengerjaan
+
+Beberapa bagian UI yang dikembangkan dalam proyek ini meliputi:
+
+- Kartu tugas untuk menampilkan informasi tugas dan statusnya.
+- Daftar tugas menggunakan `LazyColumn`.
+- Filter atau pengurutan data tugas.
+- Layout utama aplikasi dan tombol FAB untuk aksi utama.
+
+### Testing UI
+
+Pengujian dilakukan dengan menjalankan aplikasi dan memeriksa tampilan komponen yang telah dibuat.
+
+Hal yang diperiksa meliputi tampilan kartu tugas, daftar tugas, label status, dan tombol FAB.
+
+### Screenshot Aplikasi
+
+Screenshot 
+
+### Pembagian Tugas
+
+1. Tugas 1: Kartu Entitas dan Component UI.
+2. Tugas 2: LazyColumn dan Filter Data.
+3. Tugas 3: Layout Utama dan FAB.
+4. Tugas 4: Dokumentasi README dan Testing UI — Tarisa Menova.
+
+### Kesimpulan
+
+Melalui pengerjaan minggu ke-3, dokumentasi proyek diperbarui untuk menjelaskan hasil pengembangan UI dan pengujian aplikasi TemanTugas.
+
 
