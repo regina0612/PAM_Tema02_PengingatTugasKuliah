@@ -124,17 +124,17 @@ Hal yang diperiksa meliputi tampilan kartu tugas, daftar tugas, label status, da
 Berikut tampilan aplikasi TemanTugas
 saat dijalankan pada emulator Android.
 
-![Screenshot TemanTugas](screenshot-temantugas.png)
+![Screenshot TemanTugas](temantugas.png)
 ## Screenshot  
 
 Berikut tampilan Daftar, Status, Label.
 
-![Screenshot TemanTugas](screenshot-tampilan.png)
+![Screenshot TemanTugas](tampilan.png)
 ## Screenshot Aplikasi
 
 Berikut tampilan tombol FAB
 
-![Screenshot TemanTugas](screenscreenshot-FAB.png)
+![Screenshot TemanTugas](FAB.png)
 
 ### Pembagian Tugas
 
