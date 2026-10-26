@@ -6,9 +6,20 @@ import kotlinx.coroutines.flow.flow
 import model.Course
 import model.Task
 import model.TaskStatus
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class TaskRepository : Sumber<Task> {
+    // Menyimpan daftar tugas yang bisa berubah.
+    private val _tasks = MutableStateFlow<List<Task>>(emptyList())
 
+    // Daftar tugas yang bisa diamati oleh layar.
+    val tasks: StateFlow<List<Task>> = _tasks
+
+    // Menambahkan tugas baru ke daftar.
+    fun addTask(task: Task) {
+        _tasks.value = _tasks.value + task
+    }
     private fun contohTask(id: String) = Task(
         id = id,
         title = "Laporan Pengembangan Aplikasi Mobile",
