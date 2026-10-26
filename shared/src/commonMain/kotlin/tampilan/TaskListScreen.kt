@@ -35,56 +35,16 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.material3.TextButton
 
 @Composable
-fun TaskListScreen(onKembali: () -> Unit = {})  {
+fun TaskListScreen(
+    tasks: List<Task>,
+    onKembali: () -> Unit = {}
+)  {
 
     var kataKunci by remember { mutableStateOf("") }
     var filterStatus by remember { mutableStateOf("Semua") }
 
-    val daftarTugas = remember {
-        listOf(
-            Task("T01", "Laporan Pengembangan Aplikasi Mobile",
-                Course("MK01", "Pengembangan Aplikasi Mobile", "IF25-22017"),
-                "25 Okt 2026", TaskStatus.Pending),
 
-            Task("T02", "Membuat UI Aplikasi",
-                Course("MK01", "Pengembangan Aplikasi Mobile", "IF25-22017"),
-                "26 Okt 2026", TaskStatus.InProgress),
-
-            Task("T03", "Laporan Jaringan Komputer",
-                Course("MK02", "Jaringan Komputer", "IF25-22018"),
-                "27 Okt 2026", TaskStatus.Completed),
-
-            Task("T04", "Latihan Struktur Data",
-                Course("MK03", "Struktur Data", "IF25-22019"),
-                "28 Okt 2026", TaskStatus.Pending),
-
-            Task("T05", "Tugas Basis Data",
-                Course("MK04", "Basis Data", "IF25-22020"),
-                "29 Okt 2026", TaskStatus.InProgress),
-
-            Task("T06", "Praktikum Pemrograman",
-                Course("MK05", "Pemrograman", "IF25-22021"),
-                "30 Okt 2026", TaskStatus.Pending),
-
-            Task("T07", "Rangkuman Sistem Operasi",
-                Course("MK06", "Sistem Operasi", "IF25-22022"),
-                "31 Okt 2026", TaskStatus.Completed),
-
-            Task("T08", "Membuat Diagram UML",
-                Course("MK07", "Rekayasa Perangkat Lunak", "IF25-22023"),
-                "1 Nov 2026", TaskStatus.InProgress),
-
-            Task("T09", "Tugas Matematika Diskrit",
-                Course("MK08", "Matematika Diskrit", "IF25-22024"),
-                "2 Nov 2026", TaskStatus.Pending),
-
-            Task("T10", "Membuat Presentasi Proyek",
-                Course("MK09", "Manajemen Proyek", "IF25-22025"),
-                "3 Nov 2026", TaskStatus.Completed)
-        )
-    }
-
-    val tugasTerfilter = daftarTugas.filter { tugas ->
+    val tugasTerfilter = tasks.filter { tugas ->
         val cocokJudul = tugas.title.contains(
             kataKunci, ignoreCase = true
         )

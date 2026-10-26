@@ -21,6 +21,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import data.TaskRepository
+import androidx.compose.runtime.collectAsState
 
 data class Anggota(
     val nama: String,
@@ -31,6 +33,9 @@ data class Anggota(
 fun App() {
     val hijau = Color(0xFF567568)
     val krem = Color(0xFFF6F3EA)
+    // Repository tetap sama selama App berjalan.
+    val repository = remember { TaskRepository() }
+    val tasks by repository.tasks.collectAsState()
     var bukaDaftarTugas by remember { mutableStateOf(false) }
 
     val anggota = listOf(
@@ -43,9 +48,10 @@ fun App() {
     MaterialTheme {
         if (bukaDaftarTugas) {
             TaskListScreen(
+                tasks = tasks,
                 onKembali = { bukaDaftarTugas = false }
             )
-        } else {
+        }else {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
