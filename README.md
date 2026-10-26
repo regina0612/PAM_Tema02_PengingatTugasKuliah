@@ -141,10 +141,49 @@ Berikut tampilan tombol FAB
 1. Tugas 1: Kartu Entitas dan Component UI.
 2. Tugas 2: LazyColumn dan Filter Data.
 3. Tugas 3: Layout Utama dan FAB.
-4. Tugas 4: Dokumentasi README dan Testing UI — Tarisa Menova.
+4. Tugas 4: Dokumentasi README dan Testing UI 
 
 ### Kesimpulan
 
 Melalui pengerjaan minggu ke-3, dokumentasi proyek diperbarui untuk menjelaskan hasil pengembangan UI dan pengujian aplikasi TemanTugas.
+
+# Tugas Proyek Minggu 4 PAM
+## Pengembangan Form Tambah Tugas — TemanTugas
+
+Pada minggu ke-4, aplikasi TemanTugas dikembangkan dengan membuat form tambah tugas, mengelola state form, dan menghubungkan repository dengan UI.
+
+### Bagian yang Dikerjakan
+
+**1. Reusable Custom TextField Component (Stateless)**
+
+Membuat komponen TextField yang bisa digunakan kembali untuk input data tugas, seperti judul dan deskripsi.
+
+**2. TaskUiState & FormTaskViewModel**
+
+Membuat `TaskUiState` untuk menyimpan kondisi form dan `FormTaskViewModel` untuk mengelola input serta proses penambahan tugas.
+
+**3. TaskFormScreen (UI Layar Form Tambah Tugas)**
+
+Membuat tampilan form tambah tugas agar pengguna bisa mengisi informasi tugas kuliah.
+
+**4. State-Reactive Repository Integration & App Navigation Check**
+
+Menghubungkan form dengan `TaskRepository` menggunakan `StateFlow`, sehingga perubahan data dapat diamati oleh UI. Selain itu, memeriksa navigasi aplikasi agar perpindahan antara layar utama, daftar tugas, dan form tambah tugas berjalan sesuai implementasi.
+
+### Teknologi yang Digunakan
+
+- Kotlin
+- Kotlin Multiplatform (KMP)
+- Compose Multiplatform
+- StateFlow dan Coroutines
+- ViewModel
+
+### Screenshot Pengujian
+
+![Screenshot Form Tambah Tugas](screenshot-form-tugas.png)
+
+### Kesimpulan
+
+Pada minggu ke-4, kami mengembangkan komponen input yang dapat digunakan kembali, mengelola state form, membuat layar tambah tugas, serta mengintegrasikan repository dan memeriksa navigasi aplikasi. Pengembangan ini menjadi dasar untuk proses penambahan dan pengelolaan tugas di TemanTugas.
 
 
