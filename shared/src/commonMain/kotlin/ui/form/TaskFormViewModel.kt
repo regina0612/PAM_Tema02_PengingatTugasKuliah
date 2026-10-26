@@ -1,3 +1,4 @@
+
 package ui.form
 
 import androidx.lifecycle.ViewModel
@@ -10,8 +11,9 @@ import kotlinx.coroutines.launch
 import model.Course
 import model.Task
 import model.TaskStatus
+import java.util.UUID
 
-// State layar form tambah tugas
+// Menyimpan kondisi input pada form tugas.
 data class TaskFormUiState(
     val judul: String = "",
     val mataKuliah: String = "",
@@ -19,57 +21,85 @@ data class TaskFormUiState(
     val bisaSimpan: Boolean = false
 )
 
-// ViewModel untuk layar form tugas. Mengelola state input dan logika simpan.
-class TaskFormViewModel(private val repository: TaskRepository) : ViewModel() {
+// Mengelola input dan proses penyimpanan tugas.
+class TaskFormViewModel(
+    private val repository: TaskRepository
+) : ViewModel() {
 
-    // State yang diexpose ke UI sebagai StateFlow
     private val _uiState = MutableStateFlow(TaskFormUiState())
     val uiState: StateFlow<TaskFormUiState> = _uiState.asStateFlow()
 
-    // Dipanggil saat user mengetik di field Judul
+    // Memperbarui judul tugas.
     fun updateJudul(value: String) {
         _uiState.value = _uiState.value.copy(
             judul = value,
-            bisaSimpan = hitungBisaSimpan(judul = value, mataKuliah = _uiState.value.mataKuliah, deadline = _uiState.value.deadline)
+            bisaSimpan = hitungBisaSimpan(
+                value,
+                _uiState.value.mataKuliah,
+                _uiState.value.deadline
+            )
         )
     }
 
-    // Dipanggil saat user mengetik di field Nama Mata Kuliah
+    // Memperbarui nama mata kuliah.
     fun updateMataKuliah(value: String) {
         _uiState.value = _uiState.value.copy(
             mataKuliah = value,
-            bisaSimpan = hitungBisaSimpan(judul = _uiState.value.judul, mataKuliah = value, deadline = _uiState.value.deadline)
+            bisaSimpan = hitungBisaSimpan(
+                _uiState.value.judul,
+                value,
+                _uiState.value.deadline
+            )
         )
     }
 
-    // Dipanggil saat user mengetik di field Deadline
+    // Memperbarui deadline tugas.
     fun updateDeadline(value: String) {
         _uiState.value = _uiState.value.copy(
             deadline = value,
-            bisaSimpan = hitungBisaSimpan(judul = _uiState.value.judul, mataKuliah = _uiState.value.mataKuliah, deadline = value)
+            bisaSimpan = hitungBisaSimpan(
+                _uiState.value.judul,
+                _uiState.value.mataKuliah,
+                value
+            )
         )
     }
 
-    // Menghitung apakah tombol Simpan boleh diklik (semua field harus diisi)
-    private fun hitungBisaSimpan(judul: String, mataKuliah: String, deadline: String): Boolean =
-        judul.isNotBlank() && mataKuliah.isNotBlank() && deadline.isNotBlank()
+    // Tombol simpan aktif jika semua kolom sudah diisi.
+    private fun hitungBisaSimpan(
+        judul: String,
+        mataKuliah: String,
+        deadline: String
+    ): Boolean {
+        return judul.isNotBlank() &&
+                mataKuliah.isNotBlank() &&
+                deadline.isNotBlank()
+    }
 
-    // Dipanggil saat tombol Simpan Tugas diklik. Membuat objek Task dan menyimpannya.
+    // Membuat tugas baru dan menyimpannya ke repository.
     fun simpan() {
+        val state = _uiState.value
+
+        if (!state.bisaSimpan) return
+
+        val task = Task(
+            id = UUID.randomUUID().toString(),
+            title = state.judul.trim(),
+            course = Course(
+                id = "MK-01",
+                name = state.mataKuliah.trim(),
+                code = ""
+            ),
+            deadline = state.deadline.trim(),
+            status = TaskStatus.Pending,
+            description = null
+        )
+
         viewModelScope.launch {
-            val task = Task(
-                id = java.util.UUID.randomUUID().toString(),
-                title = _uiState.value.judul,
-                course = Course(
-                    id = "MK-01",
-                    name = _uiState.value.mataKuliah,
-                    code = ""
-                ),
-                deadline = _uiState.value.deadline,
-                status = TaskStatus.Pending
-            )
-            // Simpan tugas melalui repository (saat ini simulasi, belum ada method simpan di repository)
-            // repository.simpan(task)
+            repository.addTask(task)
+
+            // Mengosongkan form setelah tugas ditambahkan.
+            _uiState.value = TaskFormUiState()
         }
     }
 }

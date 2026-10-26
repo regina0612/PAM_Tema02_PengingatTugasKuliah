@@ -12,13 +12,12 @@ import tampilan.TaskListScreen
 fun LayarUtama(
     onKembali: () -> Unit = {}
 ) {
-    // Mengambil daftar tugas dari repository.
     val repository = remember { TaskRepository() }
     val tasks by repository.tasks.collectAsState()
 
-    // Layar daftar mengikuti perubahan daftar tugas.
     TaskListScreen(
         tasks = tasks,
+        repository = repository,
         onKembali = onKembali
     )
 }

@@ -2,27 +2,37 @@
 package com.example.myapplication
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import tampilan.TaskListScreen
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import data.TaskRepository
-import androidx.compose.runtime.collectAsState
+import tampilan.TaskListScreen
 
 data class Anggota(
     val nama: String,
@@ -33,9 +43,11 @@ data class Anggota(
 fun App() {
     val hijau = Color(0xFF567568)
     val krem = Color(0xFFF6F3EA)
-    // Repository tetap sama selama App berjalan.
+
+    // Satu repository digunakan bersama oleh daftar dan form tugas.
     val repository = remember { TaskRepository() }
     val tasks by repository.tasks.collectAsState()
+
     var bukaDaftarTugas by remember { mutableStateOf(false) }
 
     val anggota = listOf(
@@ -49,9 +61,12 @@ fun App() {
         if (bukaDaftarTugas) {
             TaskListScreen(
                 tasks = tasks,
-                onKembali = { bukaDaftarTugas = false }
+                repository = repository,
+                onKembali = {
+                    bukaDaftarTugas = false
+                }
             )
-        }else {
+        } else {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -116,8 +131,13 @@ fun App() {
                         )
                     }
                 }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
                 Button(
-                    onClick = { bukaDaftarTugas = true },
+                    onClick = {
+                        bukaDaftarTugas = true
+                    },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = hijau
@@ -174,10 +194,11 @@ fun App() {
                     text = "PAM",
                     fontSize = 12.sp,
                     color = Color.Gray,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                    modifier = Modifier.align(
+                        Alignment.CenterHorizontally
+                    )
                 )
-        }
-
+            }
         }
     }
 }

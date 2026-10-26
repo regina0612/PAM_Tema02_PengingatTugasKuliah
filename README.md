@@ -179,8 +179,9 @@ Menghubungkan form dengan `TaskRepository` menggunakan `StateFlow`, sehingga per
 - ViewModel
 
 ### Screenshot Pengujian
+![tampilansetelah.png](tampilansetelah.png)
+![tombolFAD.png](tombolFAD.png)
 
-![Screenshot Form Tambah Tugas](screenshot-form-tugas.png)
 
 ### Kesimpulan
 

@@ -1,3 +1,4 @@
+
 package tampilan
 
 import androidx.compose.foundation.layout.Arrangement
@@ -9,44 +10,50 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import model.Course
+import androidx.compose.ui.unit.sp
+import data.TaskRepository
 import model.Task
 import model.TaskStatus
 import ui.components.TaskItemCard
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.FloatingActionButtonDefaults
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
-import androidx.compose.material3.TextButton
+import ui.form.TaskFormScreen
 
 @Composable
 fun TaskListScreen(
     tasks: List<Task>,
+    repository: TaskRepository,
     onKembali: () -> Unit = {}
-)  {
-
+) {
     var kataKunci by remember { mutableStateOf("") }
     var filterStatus by remember { mutableStateOf("Semua") }
+    var tampilFormTambah by remember { mutableStateOf(false) }
 
+    val hijau = Color(0xFF567568)
+    val krem = Color(0xFFF6F3EA)
 
+    // Filter berdasarkan judul dan status tugas.
     val tugasTerfilter = tasks.filter { tugas ->
         val cocokJudul = tugas.title.contains(
-            kataKunci, ignoreCase = true
+            kataKunci,
+            ignoreCase = true
         )
 
         val cocokStatus = when (filterStatus) {
@@ -65,125 +72,134 @@ fun TaskListScreen(
         cocokJudul && cocokStatus
     }
 
-    // =========================================================================
-    // Porsi Tugas 3: Layout Utama & FAB (Raymond Kolose Nathanael Simbolon)
-    // =========================================================================
-    var tampilDialogTambah by remember { mutableStateOf(false) }
-
-    if (tampilDialogTambah) {
-        AlertDialog(
-            onDismissRequest = { tampilDialogTambah = false },
-            title = {
-                Text(
-                    text = "Tambah Tugas Baru",
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF567568)
-                )
-            },
-            text = {
-                Text(
-                    text = "Aksi utama penambahan tugas (FAB) berhasil diimplementasikan sesuai ketentuan Modul 3. Formulir input data akan aktif pada modul berikutnya."
-                )
-            },
-            confirmButton = {
-                TextButton(onClick = { tampilDialogTambah = false }) {
-                    Text("Mengerti", color = Color(0xFF567568), fontWeight = FontWeight.Bold)
-                }
-            },
-            shape = RoundedCornerShape(16.dp),
-            containerColor = Color.White
-        )
-    }
-
-    Scaffold(
-        containerColor = Color(0xFFF6F3EA),
-        floatingActionButton = {
-            FloatingActionButton(
-                containerColor = Color(0xFF567568),
-                contentColor = Color.White,
-                shape = RoundedCornerShape(16.dp),
-                elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 4.dp),
-                onClick = {
-                    // Porsi Tugas 3: FAB siap digunakan
-                    tampilDialogTambah = true
-                }
-            ) {
-                Text(
-                    text = "+",
-                    fontSize = 26.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-        }
-    ) { innerPadding ->
-
+    // Jika FAB ditekan, tampilkan form tambah tugas.
+    if (tampilFormTambah) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
+                .padding(16.dp)
         ) {
             TextButton(
-                onClick = onKembali,
-                modifier = Modifier.padding(horizontal = 8.dp)
+                onClick = { tampilFormTambah = false }
             ) {
-                Text("← Kembali ke TemanTugas", color = Color(0xFF567568), fontWeight = FontWeight.SemiBold)
+                Text(
+                    text = "← Kembali ke Daftar Tugas",
+                    color = hijau
+                )
             }
-            Text(
-                text = "Daftar Tugas Kuliah",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF567568),
-                modifier = Modifier.padding(16.dp)
+
+            TaskFormScreen(
+                repository = repository,
+                onSelesai = {
+                    tampilFormTambah = false
+                }
             )
-
-            TextField(
-                value = kataKunci,
-                onValueChange = { kataKunci = it },
-                label = { Text("Cari tugas...") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-            )
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 12.dp),
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                listOf(
-                    "Semua",
-                    "Belum Selesai",
-                    "Sedang Dikerjakan",
-                    "Selesai"
-                ).forEach { status ->
-
-                    FilterChip(
-                        selected = filterStatus == status,
-                        onClick = { filterStatus = status },
-                        label = { Text(status) }
+        }
+    } else {
+        Scaffold(
+            containerColor = krem,
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = { tampilFormTambah = true },
+                    containerColor = hijau,
+                    contentColor = Color.White,
+                    shape = RoundedCornerShape(16.dp),
+                    elevation = FloatingActionButtonDefaults.elevation(
+                        defaultElevation = 4.dp
+                    )
+                ) {
+                    Text(
+                        text = "+",
+                        fontSize = 26.sp,
+                        fontWeight = FontWeight.Bold
                     )
                 }
             }
-
-            Text(
-                text = "${tugasTerfilter.size} tugas ditemukan",
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(16.dp)
-            )
-
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(bottom = 80.dp)
+        ) { innerPadding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
             ) {
-                items(
-                    items = tugasTerfilter,
-                    key = { it.id }
-                ) { tugas ->
-                    TaskItemCard(task = tugas)
+                TextButton(
+                    onClick = onKembali,
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                ) {
+                    Text(
+                        text = "← Kembali ke TemanTugas",
+                        color = hijau,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+
+                Text(
+                    text = "Daftar Tugas Kuliah",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = hijau,
+                    modifier = Modifier.padding(16.dp)
+                )
+
+                TextField(
+                    value = kataKunci,
+                    onValueChange = { kataKunci = it },
+                    label = { Text("Cari tugas...") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    listOf(
+                        "Semua",
+                        "Belum Selesai",
+                        "Sedang Dikerjakan",
+                        "Selesai"
+                    ).forEach { status ->
+                        FilterChip(
+                            selected = filterStatus == status,
+                            onClick = { filterStatus = status },
+                            label = { Text(status) }
+                        )
+                    }
+                }
+
+                Text(
+                    text = "${tugasTerfilter.size} tugas ditemukan",
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(16.dp)
+                )
+
+                if (tugasTerfilter.isEmpty()) {
+                    Text(
+                        text = "Belum ada tugas yang sesuai. Tekan tombol + untuk menambahkan tugas.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.Gray,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(
+                            start = 8.dp,
+                            end = 8.dp,
+                            bottom = 80.dp
+                        )
+                    ) {
+                        items(
+                            items = tugasTerfilter,
+                            key = { it.id }
+                        ) { tugas ->
+                            TaskItemCard(task = tugas)
+                        }
+                    }
                 }
             }
-
         }
     }
 }

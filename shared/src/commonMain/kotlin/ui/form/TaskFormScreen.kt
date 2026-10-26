@@ -1,7 +1,16 @@
+
 package ui.form
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -13,13 +22,15 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import data.TaskRepository
 import ui.components.CustomTextField
 
-// Layar form untuk menambahkan tugas baru. Mengambil state dari TaskFormViewModel.
 @Composable
-fun TaskFormScreen() {
-    // Ambil instance TaskFormViewModel. TaskRepository dibuat langsung di sini.
-    val viewModel = viewModel { TaskFormViewModel(TaskRepository()) }
+fun TaskFormScreen(
+    repository: TaskRepository,
+    onSelesai: () -> Unit = {}
+) {
+    val viewModel = viewModel {
+        TaskFormViewModel(repository)
+    }
 
-    // Kumpulkan uiState sebagai State Compose, sehingga layar merekomposisi saat state berubah
     val uiState by viewModel.uiState.collectAsState()
 
     Column(
@@ -29,28 +40,24 @@ fun TaskFormScreen() {
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Judul halaman
         Text(
             text = "Form Tambah Tugas",
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold
         )
 
-        // Input field untuk Judul tugas
         CustomTextField(
             value = uiState.judul,
             onValueChange = { viewModel.updateJudul(it) },
             label = "Judul Tugas"
         )
 
-        // Input field untuk Nama Mata Kuliah
         CustomTextField(
             value = uiState.mataKuliah,
             onValueChange = { viewModel.updateMataKuliah(it) },
             label = "Nama Mata Kuliah"
         )
 
-        // Input field untuk Deadline pengumpulan tugas
         CustomTextField(
             value = uiState.deadline,
             onValueChange = { viewModel.updateDeadline(it) },
@@ -59,16 +66,15 @@ fun TaskFormScreen() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Tombol Simpan Tugas. enabled tergantung uiState.bisaSimpan (semua field terisi).
-        // Saat diklik, memanggil fungsi simpan() dari ViewModel.
         Button(
             onClick = {
                 viewModel.simpan()
+                onSelesai()
             },
             enabled = uiState.bisaSimpan,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = "Simpan Tugas")
+            Text("Simpan Tugas")
         }
     }
 }
